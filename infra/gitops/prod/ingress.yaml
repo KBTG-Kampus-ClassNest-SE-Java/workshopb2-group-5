@@ -2,13 +2,13 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-website
-  namespace: <group-id>-prod
+  namespace: group-5-prod
   annotations:
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
-  - host: <group-id>-prod.aorjoa.com
+  - host: group-5-prod.aorjoa.com
     http:
       paths:
       - path: /
