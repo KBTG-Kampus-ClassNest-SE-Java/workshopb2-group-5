@@ -32,6 +32,12 @@ public class CartService {
         return ResponseEntity.ok().body(mapToCartItemResponse(cartItem));
     }
 
+    public ResponseEntity<List<CartItemResponse>> getAllCarts() {
+        List<CartItemResponse> cartItemResponseList =
+                cartItemRepository.findAll().stream().map(this::mapToCartItemResponse).toList();
+        return ResponseEntity.ok().body(cartItemResponseList);
+    }
+
     public CartItemResponse mapToCartItemResponse(CartItem cartItem) {
         List<CartItem> cartItemList = cartItemRepository.findAllByUsername(cartItem.getUsername());
         BigDecimal total =
