@@ -1,0 +1,5 @@
+INSERT INTO cart(username) VALUES ('TechNinja')  ON CONFLICT DO NOTHING;
+INSERT INTO cart(username) VALUES ('CodeMaster')  ON CONFLICT DO NOTHING;
+INSERT INTO cart(username) VALUES ('DataGuru')  ON CONFLICT DO NOTHING;
+INSERT INTO cart(username) VALUES ('CyberSavvy')  ON CONFLICT DO NOTHING;
+INSERT INTO cart(username) VALUES ('GeekChic')  ON CONFLICT DO NOTHING;
