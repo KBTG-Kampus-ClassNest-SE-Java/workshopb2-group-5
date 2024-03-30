@@ -1,4 +1,3 @@
 package com.kampus.kbazaar.promotion;
 
-public class PromotionRequest {
-}
+public class PromotionRequest {}
