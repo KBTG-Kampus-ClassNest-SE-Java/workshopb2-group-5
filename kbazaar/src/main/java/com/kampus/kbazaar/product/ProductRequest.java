@@ -12,7 +12,7 @@ public class ProductRequest {
     private String sku;
     private String name;
     private BigDecimal price;
-    private int quantity;
+    private BigDecimal quantity;
     private BigDecimal discount;
-    private String promotionCode;
+    private String promotionCodes;
 }

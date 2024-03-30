@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS cart_item (
     price DECIMAL(10, 2) default 0.00,
     quantity INT NOT NULL default 0,
     discount DECIMAL(10, 2) default 0.00,
-    promotion_codes VARCHAR(255) NOT NULL default '', -- comma-separated list of promotion codes
+    promotion_codes VARCHAR(255) default '', -- comma-separated list of promotion codes
     UNIQUE (username, sku)
 );
