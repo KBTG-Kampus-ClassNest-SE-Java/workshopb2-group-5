@@ -1,16 +1,13 @@
 package com.kampus.kbazaar.cart;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class CartService {
 
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
 
-    private CartItemRepository cartItemRepository;
-
-    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository) {
-        this.cartRepository = cartRepository;
-        this.cartItemRepository = cartItemRepository;
-    }
+    private final CartItemRepository cartItemRepository;
 }
