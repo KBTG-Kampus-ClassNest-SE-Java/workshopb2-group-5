@@ -41,8 +41,8 @@ public class ProductController {
                     schema = @Schema(implementation = NotFoundException.class)))
     @GetMapping("/products")
     public List<ProductResponse> getProducts(@RequestParam(name = "page", required = false) Optional<Integer> page, @RequestParam(name = "per_page", required = false) Optional<Integer> perPage) {
-        if (page != null) {
-            return productService.getPagination(Integer.valueOf(page.get())-1, Integer.valueOf(perPage.get()));
+        if (page.isPresent() && perPage.isPresent()) {
+            return productService.getPagination(page.get()-1, perPage.get());
         } else {
             return productService.getAll();
         }
