@@ -3,25 +3,24 @@ package com.kampus.kbazaar.cart;
 import com.kampus.kbazaar.product.ProductRequest;
 import com.kampus.kbazaar.promotion.Promotion;
 import com.kampus.kbazaar.promotion.PromotionRepository;
-import com.kampus.kbazaar.shopper.ShopperRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class CartService {
-
-    private final CartRepository cartRepository;
-
-    private final ShopperRepository shopperRepository;
 
     private final CartItemRepository cartItemRepository;
 
     private final PromotionRepository promotionRepository;
+
+    public CartService(
+            CartItemRepository cartItemRepository, PromotionRepository promotionRepository) {
+        this.cartItemRepository = cartItemRepository;
+        this.promotionRepository = promotionRepository;
+    }
 
     public CartItemResponse addProductToCart(ProductRequest productRequest, String username) {
         CartItem cartItem =

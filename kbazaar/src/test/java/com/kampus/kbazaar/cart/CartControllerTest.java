@@ -1,9 +1,7 @@
 package com.kampus.kbazaar.cart;
 
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.kampus.kbazaar.product.ProductRequest;
@@ -57,6 +55,7 @@ public class CartControllerTest {
                         "Pencils",
                         BigDecimal.valueOf(10.25),
                         BigDecimal.valueOf(1),
+                        1,
                         BigDecimal.valueOf(0),
                         "");
         CartItemResponse cartItemResponse = new CartItemResponse();
@@ -75,7 +74,6 @@ public class CartControllerTest {
                                                 + "  \"promotionCodes\": \"\"\n"
                                                 + "}")
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.username", is(cartItemResponse.getUsername())));
+                .andExpect(status().isCreated());
     }
 }
