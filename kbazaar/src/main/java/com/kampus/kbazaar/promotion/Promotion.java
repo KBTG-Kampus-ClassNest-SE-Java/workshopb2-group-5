@@ -6,10 +6,12 @@ import java.time.LocalDateTime;
 import java.util.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "promotion")
 @Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Promotion {

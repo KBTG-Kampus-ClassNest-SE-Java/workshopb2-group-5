@@ -13,6 +13,10 @@ public class CartController {
 
     private final CartService cartService;
 
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
+
     @GetMapping("/carts")
     public ResponseEntity<List<CartItemResponse>> getAllCarts() {
         return cartService.getAllCarts();
@@ -22,5 +26,11 @@ public class CartController {
     public ResponseEntity<CartItemResponse> addProductToCart(
             @RequestBody ProductRequest productRequest, @PathVariable String username) {
         return cartService.addProductToCart(productRequest, username);
+    }
+
+    @PostMapping("/carts/{username}/promotions")
+    public ResponseEntity<CartItemResponse> applyPromotionToCart(
+            @RequestBody CartItemRequest cartItemRequest, @PathVariable String username) {
+        return cartService.applyPromotionToCart(cartItemRequest, username);
     }
 }

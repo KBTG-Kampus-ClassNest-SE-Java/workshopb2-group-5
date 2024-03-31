@@ -1,8 +1,11 @@
 package com.kampus.kbazaar.cart;
 
 import com.kampus.kbazaar.product.ProductRequest;
+import com.kampus.kbazaar.promotion.Promotion;
+import com.kampus.kbazaar.promotion.PromotionRepository;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,15 @@ public class CartService {
     private final CartRepository cartRepository;
 
     private final CartItemRepository cartItemRepository;
+
+    private final PromotionRepository promotionRepository;
+
+    //    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository,
+    // PromotionRepository promotionRepository) {
+    //        this.cartRepository = cartRepository;
+    //        this.cartItemRepository = cartItemRepository;
+    //        this.promotionRepository = promotionRepository;
+    //    }
 
     public ResponseEntity<CartItemResponse> addProductToCart(
             ProductRequest productRequest, String username) {
@@ -57,5 +69,16 @@ public class CartService {
                         .promotionCodes(cartItem.getPromotionCodes())
                         .build();
         return cartItemResponse;
+    }
+
+    public ResponseEntity<CartItemResponse> applyPromotionToCart(
+            CartItemRequest cartItemRequest, String userName) {
+        CartItemResponse cartItemResponse = new CartItemResponse();
+        Optional<Promotion> applyPromotion =
+                promotionRepository.findByCode(cartItemRequest.getCode());
+        Promotion promotion = applyPromotion.get();
+        promotion.getDiscountAmount();
+
+        return null; // ResponseEntity.ok().body(cartItemResponseList);
     }
 }
