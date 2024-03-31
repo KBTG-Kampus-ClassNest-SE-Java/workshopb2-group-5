@@ -41,7 +41,7 @@ public class ProductController {
             @RequestParam(name = "page", required = false) Optional<Integer> page,
             @RequestParam(name = "per_page", required = false) Optional<Integer> perPage) {
         if (page.isPresent() && perPage.isPresent()) {
-            return productService.getPagination(page.get() - 1, perPage.get());
+            return productService.getPagination(page.get(), perPage.get());
         } else {
             return productService.getAll();
         }

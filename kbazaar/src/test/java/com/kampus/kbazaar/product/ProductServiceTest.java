@@ -15,6 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 class ProductServiceTest {
 
@@ -94,5 +98,33 @@ class ProductServiceTest {
 
         // Assertions
         assertThrows(NotFoundException.class, () -> productService.getBySku("NonExistingSKU"));
+    }
+
+    @Test
+    @DisplayName("should return length of list equal per page")
+    void shouldReturnSizeEqualPerPage() {
+        // Mock data
+        Product product1 =
+                new Product(
+                        1L,
+                        "Google Pixel 5",
+                        "MOBILE-GOOGLE-PIXEL-5",
+                        new BigDecimal(12990.75),
+                        100);
+        Product product2 =
+                new Product(2L, "Coca-Cola", "BEV-COCA-COLA", new BigDecimal(20.75), 150);
+
+        List<Product> productList = Arrays.asList(product1, product2);
+        Pageable pageable = PageRequest.of(0, 2);
+        Page<Product> page = new PageImpl<>(productList);
+        when(productRepository.findAll(pageable)).thenReturn(page);
+
+        // Call service method
+        List<ProductResponse> result = productService.getPagination(0, 2);
+
+        // Assertions
+        assertEquals(2, result.size());
+        assertEquals("Google Pixel 5", result.get(0).name());
+        assertEquals("BEV-COCA-COLA", result.get(1).sku());
     }
 }

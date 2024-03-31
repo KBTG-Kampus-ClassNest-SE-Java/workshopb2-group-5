@@ -64,22 +64,22 @@ public class ProductControllerTest {
     @Test
     @DisplayName("should return some product based on page and perPage")
     public void shouldReturnSomeProduct() throws Exception {
-        // Given
-        //        ProductResponse productResponse = new
-        // ProductResponse(Long.valueOf(1),"mock_product", "mock_sku", BigDecimal.valueOf(10), 10);
         ProductResponse productResponse =
                 new ProductResponse(1L, "mock_product", "mock_sku", BigDecimal.valueOf(10), 10);
+        ProductResponse productResponse2 =
+                new ProductResponse(2L, "mock_product2", "mock_sku2", BigDecimal.valueOf(11), 11);
         List<ProductResponse> mockResponse = new ArrayList<>();
         mockResponse.add(productResponse);
+        mockResponse.add(productResponse2);
 
         // When & Then
         when(productService.getPagination(any(), any())).thenReturn(mockResponse);
 
         mockMvc.perform(
-                        get("/api/v1/products?page=1&per_page=1")
+                        get("/api/v1/products?page=1&per_page=2")
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[-1].id", is(1)))
+                .andExpect(jsonPath("$.length()", is(2)))
                 .andExpect(status().isOk());
 
         verify(productService, times(0)).getAll();
