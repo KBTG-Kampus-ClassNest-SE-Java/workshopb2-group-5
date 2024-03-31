@@ -1,11 +1,10 @@
 package com.kampus.kbazaar.cart;
 
 import com.kampus.kbazaar.promotion.PromotionRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.math.BigDecimal;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -25,12 +24,10 @@ public class CartItemService {
     }
 
     public BigDecimal calculateSubTotal(List<CartItem> cartItems) {
-        return cartItems.stream()
-                .map(CartItem::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return cartItems.stream().map(CartItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    public BigDecimal calculateGrandTotal(BigDecimal discount, BigDecimal subtTotal){
+    public BigDecimal calculateGrandTotal(BigDecimal discount, BigDecimal subtTotal) {
         return subtTotal.subtract(discount);
     }
 }

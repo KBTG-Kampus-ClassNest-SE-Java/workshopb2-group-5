@@ -26,9 +26,6 @@ public class CartItemRequest {
     }
 
     public String toString() {
-        return "{" +
-                "\"code\":\"" + code + "\"," +
-                "\"productSkus\":\"" + productSkus + "\"" +
-                "}";
+        return "{" + "\"code\":\"" + code + "\"," + "\"productSkus\":\"" + productSkus + "\"" + "}";
     }
 }
