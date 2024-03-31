@@ -66,12 +66,10 @@ public class CartService {
 
     public ResponseEntity<CartItemResponse> applyPromotionToCart(
             CartItemRequest cartItemRequest, String userName) {
-        if(cartItemRequest.getProductSkus().isEmpty())
-        {
-            //todo add to cart
-        }
-        else{
-            //todo add to cart item
+        if (cartItemRequest.getProductSkus().isEmpty()) {
+            // todo add to cart
+        } else {
+            // todo add to cart item
         }
 
         CartItemResponse cartItemResponse = new CartItemResponse();

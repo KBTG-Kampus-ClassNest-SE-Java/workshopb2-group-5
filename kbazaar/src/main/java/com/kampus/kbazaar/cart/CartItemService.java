@@ -17,6 +17,10 @@ public class CartItemService {
         return cartItemRepository.findAllByUsernameAndSku(username, sku);
     }
 
+    //    public CartItemResponse applySpecificPromotion(){
+    //        return
+    //    }
+
     public BigDecimal calculateTotalDiscount(List<CartItem> cartItems) {
         return cartItems.stream()
                 .map(CartItem::getDiscount)
