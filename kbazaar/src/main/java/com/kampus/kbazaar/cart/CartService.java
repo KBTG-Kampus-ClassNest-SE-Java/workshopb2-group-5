@@ -24,7 +24,9 @@ public class CartService {
     private BigDecimal spippingFeeConstant = new BigDecimal(25);
 
     public CartService(
-            CartItemRepository cartItemRepository, PromotionRepository promotionRepository, CartItemService cartItemService) {
+            CartItemRepository cartItemRepository,
+            PromotionRepository promotionRepository,
+            CartItemService cartItemService) {
         this.cartItemRepository = cartItemRepository;
         this.promotionRepository = promotionRepository;
         this.cartItemService = cartItemService;
