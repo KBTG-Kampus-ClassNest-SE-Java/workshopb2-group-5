@@ -3,6 +3,7 @@ package com.kampus.kbazaar.cart;
 import com.kampus.kbazaar.product.ProductRequest;
 import com.kampus.kbazaar.promotion.Promotion;
 import com.kampus.kbazaar.promotion.PromotionRepository;
+import com.kampus.kbazaar.shopper.ShopperRepository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -16,12 +17,13 @@ public class CartService {
 
     private final CartRepository cartRepository;
 
+    private final ShopperRepository shopperRepository;
+
     private final CartItemRepository cartItemRepository;
 
     private final PromotionRepository promotionRepository;
 
-    public ResponseEntity<CartItemResponse> addProductToCart(
-            ProductRequest productRequest, String username) {
+    public CartItemResponse addProductToCart(ProductRequest productRequest, String username) {
         CartItem cartItem =
                 CartItem.builder()
                         .username(username)
@@ -34,7 +36,7 @@ public class CartService {
                         .build();
         cartItemRepository.save(cartItem);
 
-        return ResponseEntity.ok().body(mapToCartItemResponse(cartItem));
+        return mapToCartItemResponse(cartItem);
     }
 
     public ResponseEntity<List<CartItemResponse>> getAllCarts() {
@@ -79,5 +81,26 @@ public class CartService {
         promotion.getDiscountAmount();
 
         return null; // ResponseEntity.ok().body(cartItemResponseList);
+    }
+
+    public CartItemResponse mapToDto(String username) {
+        List<CartItem> cartItemList = cartItemRepository.findAllByUsername(username);
+        BigDecimal total =
+                cartItemList.stream()
+                        .filter(cartItem1 -> cartItem1.getPrice().compareTo(BigDecimal.ZERO) != 0)
+                        .map(CartItem::getPrice)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        CartItemResponse cartItemResponse =
+                CartItemResponse.builder()
+                        .username(username)
+                        .items(cartItemList)
+                        .discount(BigDecimal.valueOf(0))
+                        .totalDiscount(BigDecimal.valueOf(0))
+                        .promotionCodes("")
+                        .subtotal(total)
+                        .grandTotal(total)
+                        .build();
+        return cartItemResponse;
     }
 }
