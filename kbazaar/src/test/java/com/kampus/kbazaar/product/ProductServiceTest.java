@@ -101,8 +101,8 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("should return length of list equal per page")
-    void shouldReturnSizeEqualPerPage() {
+    @DisplayName("should return 0 page limit 2")
+    void shouldReturnEqualTwoPage() {
         // Mock data
         Product product1 =
                 new Product(
