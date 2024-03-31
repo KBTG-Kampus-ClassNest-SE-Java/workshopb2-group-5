@@ -23,27 +23,6 @@ public class CartServiceTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
-        List<CartItemResponse> cartItemResponseList =
-                new ArrayList<>(
-                        List.of(
-                                new CartItemResponse(
-                                        "TechNinja",
-                                        new ArrayList<CartItem>(
-                                                List.of(
-                                                        new CartItem(
-                                                                2L,
-                                                                "TechNinja",
-                                                                "MOBILE-APPLE-IPHONE-12-PRO",
-                                                                "Apple iPhone 12 Pro",
-                                                                BigDecimal.valueOf(12990.75),
-                                                                1,
-                                                                BigDecimal.valueOf(0.00),
-                                                                null))),
-                                        BigDecimal.valueOf(0),
-                                        BigDecimal.valueOf(0),
-                                        BigDecimal.valueOf(38972.25),
-                                        BigDecimal.valueOf(38972.25),
-                                        "")));
     }
 
     @Test
