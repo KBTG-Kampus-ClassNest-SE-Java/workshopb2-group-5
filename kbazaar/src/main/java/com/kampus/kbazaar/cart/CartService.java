@@ -1,12 +1,11 @@
 package com.kampus.kbazaar.cart;
 
 import com.kampus.kbazaar.product.ProductRequest;
-import com.kampus.kbazaar.promotion.Promotion;
 import com.kampus.kbazaar.promotion.PromotionRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,10 +16,18 @@ public class CartService {
 
     private final PromotionRepository promotionRepository;
 
+    private final CartItemService cartItemService;
+
+    @Value("${enabled.shipping.fee:false}")
+    private boolean enableShippingFee;
+
+    private BigDecimal spippingFeeConstant = new BigDecimal(25);
+
     public CartService(
-            CartItemRepository cartItemRepository, PromotionRepository promotionRepository) {
+            CartItemRepository cartItemRepository, PromotionRepository promotionRepository, CartItemService cartItemService) {
         this.cartItemRepository = cartItemRepository;
         this.promotionRepository = promotionRepository;
+        this.cartItemService = cartItemService;
     }
 
     public CartItemResponse addProductToCart(ProductRequest productRequest, String username) {
@@ -90,21 +97,54 @@ public class CartService {
         return cartItemResponse;
     }
 
+    public BigDecimal calculateTotalDiscount(List<CartItem> cartItems) {
+        return cartItems.stream()
+                .map(CartItem::getDiscount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal calculateSubTotal(List<CartItem> cartItems) {
+        return cartItems.stream().map(CartItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
     public ResponseEntity<CartItemResponse> applyPromotionToCart(
             CartItemRequest cartItemRequest, String userName) {
-        if (cartItemRequest.getProductSkus().isEmpty()) {
-            // todo add to cart
+        BigDecimal discount = new BigDecimal(0);
+        BigDecimal shippingFee = getShippingFee();
+        String promotionCodes = "";
+        List<CartItem> cartItemList = cartItemRepository.findAllByUsername(userName);
+        if (!cartItemRequest.getProductSkus().isEmpty()) {
+            cartItemList =
+                    cartItemService.getCartItemAndApplySpecificCode(userName, cartItemRequest);
         } else {
-            // todo add to cart item
+            discount = cartItemRequest.getDiscountAmount();
+            promotionCodes = cartItemRequest.getCode();
         }
 
-        CartItemResponse cartItemResponse = new CartItemResponse();
-        Optional<Promotion> applyPromotion =
-                promotionRepository.findByCode(cartItemRequest.getCode());
-        Promotion promotion = applyPromotion.get();
-        promotion.getDiscountAmount();
+        BigDecimal totalDiscount = calculateTotalDiscount(cartItemList).add(discount);
+        BigDecimal subtotal = calculateSubTotal(cartItemList);
+        BigDecimal grandTotal = subtotal.subtract(totalDiscount);
+        CartItemResponse cartItemResponse =
+                CartItemResponse.builder()
+                        .username(userName)
+                        .items(cartItemList)
+                        .discount(discount)
+                        .shippingFee(shippingFee)
+                        .totalDiscount(totalDiscount)
+                        .subtotal(subtotal)
+                        .grandTotal(grandTotal)
+                        .promotionCodes(promotionCodes)
+                        .build();
+        return ResponseEntity.ok().body(cartItemResponse);
+    }
 
-        return null; // ResponseEntity.ok().body(cartItemResponseList);
+    public BigDecimal getShippingFee() {
+        BigDecimal shippingFee = new BigDecimal(0);
+        // logic
+        if (enableShippingFee) {
+            shippingFee = spippingFeeConstant;
+        }
+        return shippingFee;
     }
 
     public CartItemResponse mapToDto(String username) {

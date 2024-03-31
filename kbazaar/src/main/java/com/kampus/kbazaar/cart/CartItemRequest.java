@@ -1,31 +1,11 @@
 package com.kampus.kbazaar.cart;
 
+import java.math.BigDecimal;
+import lombok.Data;
+
+@Data
 public class CartItemRequest {
     private String code;
+    private BigDecimal discountAmount;
     private String productSkus;
-
-    public CartItemRequest(String code, String productSkus) {
-        this.code = code;
-        this.productSkus = productSkus;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getProductSkus() {
-        return productSkus;
-    }
-
-    public void setProductSkus(String productSkus) {
-        this.productSkus = productSkus;
-    }
-
-    public String toString() {
-        return "{" + "\"code\":\"" + code + "\"," + "\"productSkus\":\"" + productSkus + "\"" + "}";
-    }
 }

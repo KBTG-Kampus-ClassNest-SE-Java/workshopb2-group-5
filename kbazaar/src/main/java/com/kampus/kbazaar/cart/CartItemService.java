@@ -1,7 +1,7 @@
 package com.kampus.kbazaar.cart;
 
-import com.kampus.kbazaar.promotion.PromotionRepository;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,29 +9,26 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CartItemService {
-    private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final PromotionRepository promotionRepository;
 
-    public List<CartItem> getCartItemsByUsernameAndSku(String username, String sku) {
-        return cartItemRepository.findAllByUsernameAndSku(username, sku);
-    }
+    public List<CartItem> getCartItemAndApplySpecificCode(
+            String userName, CartItemRequest cartItemRequest) {
+        String productSkus = cartItemRequest.getProductSkus();
+        BigDecimal discountAmount = cartItemRequest.getDiscountAmount();
+        String promotionCodes = cartItemRequest.getCode();
+        List<CartItem> cartItemByUsernameList = cartItemRepository.findAllByUsername(userName);
+        List<String> skuList = Arrays.stream(productSkus.split(",")).toList();
+        List<CartItem> cartItemFilterList =
+                cartItemByUsernameList.stream()
+                        .filter(cartItem -> skuList.contains(cartItem.getSku()))
+                        .toList();
 
-    //    public CartItemResponse applySpecificPromotion(){
-    //        return
-    //    }
+        cartItemFilterList.forEach(
+                cartItem -> {
+                    cartItem.setDiscount(discountAmount);
+                    cartItem.setPromotionCodes(promotionCodes);
+                });
 
-    public BigDecimal calculateTotalDiscount(List<CartItem> cartItems) {
-        return cartItems.stream()
-                .map(CartItem::getDiscount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public BigDecimal calculateSubTotal(List<CartItem> cartItems) {
-        return cartItems.stream().map(CartItem::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
-
-    public BigDecimal calculateGrandTotal(BigDecimal discount, BigDecimal subtTotal) {
-        return subtTotal.subtract(discount);
+        return cartItemFilterList;
     }
 }
