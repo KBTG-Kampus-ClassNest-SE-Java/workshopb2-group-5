@@ -62,7 +62,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("should return some product based on page and perPage")
+    @DisplayName("should return 2 product based on 1 page and 1 perPage")
     public void shouldReturnSomeProduct() throws Exception {
         ProductResponse productResponse =
                 new ProductResponse(1L, "mock_product", "mock_sku", BigDecimal.valueOf(10), 10);
@@ -98,5 +98,49 @@ public class ProductControllerTest {
                 .andExpect(status().isOk());
 
         verify(productService, times(1)).getBySku(sku);
+    }
+
+    @Test
+    @DisplayName("should return ALL if only 1 page, but missing per_page query param")
+    public void shouldReturnAllProductWhenMissionPerPage() throws Exception {
+        ProductResponse productResponse =
+                new ProductResponse(1L, "mock_product", "mock_sku", BigDecimal.valueOf(10), 10);
+        ProductResponse productResponse2 =
+                new ProductResponse(2L, "mock_product2", "mock_sku2", BigDecimal.valueOf(11), 11);
+        List<ProductResponse> mockResponse = new ArrayList<>();
+        mockResponse.add(productResponse);
+        mockResponse.add(productResponse2);
+
+        // When & Then
+        when(productService.getAll()).thenReturn(mockResponse);
+
+        mockMvc.perform(get("/api/v1/products?page=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(status().isOk());
+
+        verify(productService, times(1)).getAll();
+    }
+
+    @Test
+    @DisplayName("should return ALL if only 1 per_page, but missing page query param")
+    public void shouldReturnAllProductWhenMissionPage() throws Exception {
+        ProductResponse productResponse =
+                new ProductResponse(1L, "mock_product", "mock_sku", BigDecimal.valueOf(10), 10);
+        ProductResponse productResponse2 =
+                new ProductResponse(2L, "mock_product2", "mock_sku2", BigDecimal.valueOf(11), 11);
+        List<ProductResponse> mockResponse = new ArrayList<>();
+        mockResponse.add(productResponse);
+        mockResponse.add(productResponse2);
+
+        // When & Then
+        when(productService.getAll()).thenReturn(mockResponse);
+
+        mockMvc.perform(get("/api/v1/products?per_page=1").contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$.length()", is(2)))
+                .andExpect(status().isOk());
+
+        verify(productService, times(1)).getAll();
     }
 }
