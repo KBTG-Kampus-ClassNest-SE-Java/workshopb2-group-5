@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import com.kampus.kbazaar.exceptions.NotFoundException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +27,74 @@ class ProductServiceTest {
 
     @InjectMocks private ProductService productService;
 
+    List<Product> productList;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        productList =
+                new ArrayList<>(
+                        List.of(
+                                new Product(
+                                        1L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        2L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        3L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        4L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        5L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        6L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        7L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        8L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        9L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100),
+                                new Product(
+                                        10L,
+                                        "Pens",
+                                        "STATIONERY-PEN-BIC-BALLPOINT",
+                                        new BigDecimal(14.99),
+                                        100)));
     }
 
     @Test
@@ -126,5 +192,42 @@ class ProductServiceTest {
         assertEquals(2, result.size());
         assertEquals("Google Pixel 5", result.get(0).name());
         assertEquals("BEV-COCA-COLA", result.get(1).sku());
+    }
+
+    @Test
+    @DisplayName("should return page 2 limit 2")
+    void shouldReturnPage2limit2() {
+        int pageNumber = 2;
+        int pageSize = 2;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Product> page =
+                new PageImpl<>(
+                        productList.subList(pageSize * pageSize, pageNumber * pageSize + pageSize));
+        when(productRepository.findAll(pageable)).thenReturn(page);
+
+        // Call service method
+        List<ProductResponse> result = productService.getPagination(pageNumber, pageSize);
+
+        // Assertions
+        assertEquals(2, result.size());
+        assertEquals(5L, result.get(0).id());
+        assertEquals(6L, result.get(1).id());
+    }
+
+    @Test
+    @DisplayName("should return empty list when page = 6 and size =2 ")
+    void shouldReturnEmptyList() {
+        int pageNumber = 6;
+        int pageSize = 2;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<Product> page = new PageImpl<>(new ArrayList<Product>());
+        when(productRepository.findAll(pageable)).thenReturn(page);
+
+        // Call service method
+        List<ProductResponse> result = productService.getPagination(pageNumber, pageSize);
+        System.out.println(result);
+
+        // Assertions
+        assertEquals(0, result.size());
     }
 }
