@@ -20,13 +20,6 @@ public class CartService {
 
     private final PromotionRepository promotionRepository;
 
-    //    public CartService(CartRepository cartRepository, CartItemRepository cartItemRepository,
-    // PromotionRepository promotionRepository) {
-    //        this.cartRepository = cartRepository;
-    //        this.cartItemRepository = cartItemRepository;
-    //        this.promotionRepository = promotionRepository;
-    //    }
-
     public ResponseEntity<CartItemResponse> addProductToCart(
             ProductRequest productRequest, String username) {
         CartItem cartItem =
