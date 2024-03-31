@@ -70,9 +70,10 @@ public class CartService {
                             .username(username)
                             .items(itemsList)
                             .discount(BigDecimal.valueOf(0))
+                            .shippingFee(getShippingFee())
                             .totalDiscount(BigDecimal.valueOf(0))
                             .subtotal(total)
-                            .grandTotal(total)
+                            .grandTotal(total.add(getShippingFee()))
                             .promotionCodes("")
                             .build();
             cartItemResponseList.add(cartItemResponse);
@@ -93,9 +94,10 @@ public class CartService {
                         .username(cartItem.getUsername())
                         .items(cartItemList)
                         .discount(cartItem.getDiscount())
+                        .shippingFee(getShippingFee())
                         .totalDiscount(BigDecimal.valueOf(0))
                         .subtotal(total)
-                        .grandTotal(total)
+                        .grandTotal(total.add(getShippingFee()))
                         .promotionCodes(cartItem.getPromotionCodes())
                         .build();
         return cartItemResponse;
@@ -128,6 +130,7 @@ public class CartService {
         BigDecimal totalDiscount = calculateTotalDiscount(cartItemList).add(discount);
         BigDecimal subtotal = calculateSubTotal(cartItemList);
         BigDecimal grandTotal = subtotal.subtract(totalDiscount);
+        grandTotal = grandTotal.add(shippingFee);
         CartItemResponse cartItemResponse =
                 CartItemResponse.builder()
                         .username(userName)
@@ -144,7 +147,6 @@ public class CartService {
 
     public BigDecimal getShippingFee() {
         BigDecimal shippingFee = new BigDecimal(0);
-        // logic
         if (enableShippingFee) {
             shippingFee = spippingFeeConstant;
         }
