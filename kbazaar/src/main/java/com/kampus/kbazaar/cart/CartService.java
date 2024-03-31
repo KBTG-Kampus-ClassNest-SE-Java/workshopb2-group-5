@@ -4,6 +4,7 @@ import com.kampus.kbazaar.product.ProductRequest;
 import com.kampus.kbazaar.promotion.Promotion;
 import com.kampus.kbazaar.promotion.PromotionRepository;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.http.ResponseEntity;
@@ -39,8 +40,32 @@ public class CartService {
     }
 
     public ResponseEntity<List<CartItemResponse>> getAllCarts() {
-        List<CartItemResponse> cartItemResponseList =
-                cartItemRepository.findAll().stream().map(this::mapToCartItemResponse).toList();
+        List<CartItem> cartItemList = cartItemRepository.findAll().stream().toList();
+        List<String> usernameList =
+                cartItemList.stream().map(CartItem::getUsername).distinct().toList();
+        List<CartItemResponse> cartItemResponseList = new ArrayList<>();
+        for (String username : usernameList) {
+            List<CartItem> itemsList =
+                    cartItemRepository.findAllByUsername(username).stream().toList();
+            BigDecimal total =
+                    itemsList.stream()
+                            .filter(
+                                    cartItem1 ->
+                                            cartItem1.getPrice().compareTo(BigDecimal.ZERO) != 0)
+                            .map(CartItem::getPrice)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+            CartItemResponse cartItemResponse =
+                    CartItemResponse.builder()
+                            .username(username)
+                            .items(itemsList)
+                            .discount(BigDecimal.valueOf(0))
+                            .totalDiscount(BigDecimal.valueOf(0))
+                            .subtotal(total)
+                            .grandTotal(total)
+                            .promotionCodes("")
+                            .build();
+            cartItemResponseList.add(cartItemResponse);
+        }
         return ResponseEntity.ok().body(cartItemResponseList);
     }
 
