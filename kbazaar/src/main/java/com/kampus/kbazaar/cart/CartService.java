@@ -55,7 +55,9 @@ public class CartService {
         List<CartItemResponse> cartItemResponseList = new ArrayList<>();
         for (String username : usernameList) {
             List<CartItem> itemsList =
-                    cartItemRepository.findAllByUsername(username).stream().toList();
+                    cartItemList.stream()
+                            .filter(cartItem -> cartItem.getUsername().equals(username))
+                            .toList();
             BigDecimal total =
                     itemsList.stream()
                             .filter(
